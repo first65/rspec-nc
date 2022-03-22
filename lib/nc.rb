@@ -1,4 +1,5 @@
 require 'rspec/core/formatters/base_formatter'
+require 'notifier'
 require 'terminal-notifier'
 
 class Nc < RSpec::Core::Formatters::BaseFormatter
@@ -26,10 +27,18 @@ class Nc < RSpec::Core::Formatters::BaseFormatter
   end
 
   def notify(title, body, sound)
-    TerminalNotifier.notify body,
+    Notifier.default_notifier = :terminal_notifier if `uname`[/darwin/i]
+    Notifier.notify(
+      message: body,
       title: title,
       sound: sound,
       group: Process.pid,
-      appIcon: Rails.root / 'app' / 'assets' / 'images' / 'themes' / 'bruce' / 'favicon-96.png'
+      image: project_root / 'app' / 'assets' / 'images' / 'themes' / 'bruce' / 'favicon-96.png'
+    )
+  end
+
+  def project_root
+    return Pathname.new(ENV['PROJECT_HOST_ROOT']) if ENV['PROJECT_HOST_ROOT']
+    Rails.root
   end
 end
