@@ -1,4 +1,5 @@
 require 'rspec/core/formatters/base_formatter'
+require 'notifier'
 require 'terminal-notifier'
 
 class Nc < RSpec::Core::Formatters::BaseFormatter
